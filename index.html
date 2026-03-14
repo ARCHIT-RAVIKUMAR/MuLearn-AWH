@@ -435,14 +435,15 @@
     #events { background: var(--bg); }
     .events-layout {
       display: grid;
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: 2fr 1fr;
       gap: 60px;
       margin-top: 48px;
       align-items: start;
     }
     .events-list { display: flex; flex-direction: column; gap: 16px; }
+    .featured-event { align-self: start; }
     .event-hidden { display: none !important; }
-    .event-hidden.visible { display: flex !important; }
+    .event-hidden.visible { display: flex !important; align-items: flex-start; }
     .event-item {
       background: var(--card);
       border: 1px solid var(--border);
@@ -1255,8 +1256,8 @@
               <p>Getting Companies to Fight for You — with Arvind Panicker, Application Engineer at Google.</p>
             </div>
           </div>
-          <button id="eventsToggleBtn" class="btn btn-outline" onclick="toggleEvents()" style="margin-top:8px; align-self:center;">View More →</button>
         </div>
+        <button id="eventsToggleBtn" class="btn btn-outline" onclick="toggleEvents()" style="margin-top:16px; align-self:flex-start;">View More →</button>
         <div class="featured-event reveal">
           <div class="featured-event-img">🤖</div>
           <div class="featured-event-body">
