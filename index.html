@@ -478,20 +478,20 @@
     .event-hidden { display: none !important; }
     .event-hidden.visible { display: flex !important; align-items: flex-start; }
     .event-poster {
-      max-height: 0;
-      overflow: hidden;
-      width: 100%;
-      border-radius: 10px;
-      margin-top: 0;
-      transition: max-height 0.4s ease, margin-top 0.4s ease, opacity 0.4s ease;
-      opacity: 0;
-      display: block;
+      width: 56px;
+      height: 56px;
       object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+      margin-left: auto;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: block;
     }
-    .event-item:hover .event-poster {
-      max-height: 300px;
-      margin-top: 14px;
-      opacity: 1;
+    .event-poster:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 20px rgba(124,58,237,0.3);
     }
     .event-poster-popup { display: none; }
     .event-item {
@@ -500,8 +500,8 @@
       border-radius: 14px;
       padding: 20px 24px;
       display: flex;
-      flex-wrap: wrap;
       gap: 20px;
+      align-items: center;
       align-items: flex-start;
       cursor: pointer;
       transition: all 0.25s;
@@ -1685,6 +1685,17 @@
       const btn = document.getElementById('eventsToggleBtn');
       btn.textContent = eventsExpanded ? 'View Less ←' : 'View More →';
     }
+
+    // ── Event poster click → lightbox ──────────────────────────────
+    document.querySelectorAll('.event-poster').forEach(poster => {
+      poster.addEventListener('click', (e) => {
+        e.stopPropagation(); // don't trigger event-item click
+        lightboxImg.src = poster.src;
+        lightboxCaption.textContent = poster.alt;
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
 
     // ── Active event highlight ─────────────────────────────────────
     const eventItems = document.querySelectorAll('.event-item');
