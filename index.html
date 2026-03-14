@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>µLearn AWH | AWH Engineering College</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Variables ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f3f0ff;
+      --surface: #ede8ff;
+      --surface2: #e4dcff;
+      --border: rgba(124,58,237,0.15);
+      --accent: #7c3aed;
+      --accent2: #9333ea;
+      --accent3: #a855f7;
+      --text: #1e0a3c;
+      --muted: #6b46a0;
+      --card: rgba(255,255,255,0.7);
+      --glow: rgba(124,58,237,0.3);
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: var(--accent); color: #fff; }
+
+    /* ─── Scrollbar ─────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #e4dcff; }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
+
+    /* ─── Noise overlay ─────────────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+    }
+
+    /* ─── Utility ───────────────────────────────────────────────────── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 72px 0; }
+    .section-label {
+      font-family: var(--font-head);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 520px;
+    }
+    .tag {
+      display: inline-block;
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(124,58,237,0.25);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      padding: 4px 12px;
+      border-radius: 99px;
+      text-transform: uppercase;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      padding: 14px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 30px var(--glow);
+    }
+    .btn-primary:hover {
+      background: #9370ff;
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px var(--glow);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* ─── Nav ───────────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 18px 0;
+      transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(243,240,255,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { margin-left: 12px; }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ─── Hero ──────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 120px 0 80px;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+    }
+    .hero-orb-1 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, #7c3aed, transparent 70%);
+      top: -150px; left: -200px;
+      animation: float 8s ease-in-out infinite;
+    }
+    .hero-orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #a855f7, transparent 70%);
+      bottom: -50px; right: -100px;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+    .hero-orb-3 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, #c084fc, transparent 70%);
+      top: 35%; right: 15%;
+      animation: float 7s ease-in-out infinite 1.5s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* grid lines */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,58,237,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.08) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    .hero-content { position: relative; z-index: 1; text-align: center; display: flex; flex-direction: column; align-items: center; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(124,58,237,0.08);
+      border: 1px solid rgba(124,58,237,0.2);
+      border-radius: 99px;
+      padding: 6px 16px 6px 8px;
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-badge-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-title {
+      font-family: var(--font-head);
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+    .hero-title .grad {
+      background: linear-gradient(135deg, #7c3aed, #9333ea, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 0;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+    .hero-stats {
+      margin-top: 32px;
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.6s ease 0.4s both;
+    }
+    .hero-stat-num {
+      font-family: var(--font-head);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+    }
+    .hero-stat-num span { color: var(--accent); }
+    .hero-stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── About ─────────────────────────────────────────────────────── */
+    #about { background: var(--surface); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      backdrop-filter: blur(12px);
+    }
+    .about-card-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    .about-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .about-card p { color: var(--muted); font-size: 0.9rem; }
+    .about-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .about-card:nth-child(2) { margin-top: 24px; }
+    .about-card:nth-child(4) { margin-top: -24px; }
+
+    /* ─── Achievements ──────────────────────────────────────────────── */
+    #achievements { background: var(--surface); }
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .achievement-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .achievement-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+    .achievement-body {
+      padding: 28px;
+    }
+    .achievement-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .achievement-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(124,58,237,0.25);
+      box-shadow: 0 20px 40px rgba(124,58,237,0.12);
+    }
+    .achievement-card:hover::before { opacity: 1; }
+    .achievement-icon { font-size: 2.5rem; margin-bottom: 20px; }
+    .achievement-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .achievement-card p { color: var(--muted); font-size: 0.9rem; }
+    .achievement-year {
+      margin-top: 20px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ─── Events ────────────────────────────────────────────────────── */
+    #events { background: var(--bg); }
+    .events-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 60px;
+      margin-top: 48px;
+      align-items: start;
+    }
+    .events-list { display: flex; flex-direction: column; gap: 16px; }
+    .event-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .event-item:hover, .event-item.active {
+      border-color: rgba(124,58,237,0.3);
+      background: rgba(124,58,237,0.08);
+    }
+    .event-date {
+      min-width: 48px;
+      text-align: center;
+    }
+    .event-date-month {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .event-date-day {
+      font-family: var(--font-head);
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text);
+    }
+    .event-date-year {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+    .event-info h4 {
+      font-family: var(--font-head);
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    .event-info p { color: var(--muted); font-size: 0.85rem; }
+
+    .featured-event {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      position: sticky;
+      top: 100px;
+    }
+    .featured-event-img {
+      width: 100%;
+      height: 220px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(147,51,234,0.3));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+    .featured-event-body { padding: 32px; }
+    .featured-event-body h3 {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .featured-event-body p { color: var(--muted); margin-bottom: 24px; }
+
+    /* ─── Gallery ───────────────────────────────────────────────────── */
+    #gallery { background: var(--bg); }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto;
+      gap: 12px;
+      margin-top: 48px;
+    }
+    .gallery-item {
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-item:hover { transform: scale(1.02); }
+    .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; min-height: 280px; }
+    .gallery-item.placeholder {
+      background: linear-gradient(135deg, var(--surface), var(--surface2));
+      font-size: 2rem;
+      color: var(--muted);
+    }
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(124,58,237,0.5);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 20px;
+    }
+
+    /* ─── Team ──────────────────────────────────────────────────────── */
+    #team { background: var(--surface); }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .team-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .team-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .team-card:hover { transform: translateY(-6px); border-color: rgba(124,58,237,0.25); }
+    .team-card:hover::after { transform: scaleX(1); }
+    .team-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+      overflow: hidden;
+    }
+    .team-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .team-card h3 {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .team-role { color: var(--accent); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+    .team-links { display: flex; justify-content: center; gap: 12px; }
+    .team-link {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(124,58,237,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .team-link:hover {
+      background: #0A66C2;
+      border-color: #0A66C2;
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .team-link svg { width: 16px; height: 16px; }
+
+    /* ─── Contact ───────────────────────────────────────────────────── */
+    #contact { background: var(--bg); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .contact-card.wide {
+      grid-column: span 1;
+    }
+    .contact-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .contact-card:hover { border-color: rgba(124,58,237,0.3); transform: translateY(-4px); }
+    .contact-card-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .contact-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+    .contact-card p { color: var(--muted); font-size: 0.9rem; flex: 1; }
+
+    /* ─── Footer ────────────────────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 60px 0 32px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 48px;
+    }
+    .footer-brand p { color: var(--muted); font-size: 0.9rem; margin-top: 16px; max-width: 300px; }
+    .footer-col h4 {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ─── Nav active link ───────────────────────────────────────────── */
+    .nav-links a.active {
+      color: var(--text);
+      position: relative;
+    }
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+    }
+
+    /* ─── Page Loader ───────────────────────────────────────────────── */
+    #pageLoader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 9998;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: opacity 0.6s ease;
+    }
+    .loader-logo {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .loader-logo span { color: var(--accent); }
+    .loader-bar {
+      width: 160px;
+      height: 3px;
+      background: var(--surface2);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .loader-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      animation: loadBar 1.2s ease forwards;
+    }
+    @keyframes loadBar {
+      0% { width: 0%; }
+      60% { width: 75%; }
+      100% { width: 100%; }
+    }
+
+    /* ─── Lightbox ──────────────────────────────────────────────────── */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(8px);
+      padding: 24px;
+    }
+    #lightbox.open { opacity: 1; pointer-events: all; }
+    #lightboxImg {
+      max-width: 90vw;
+      max-height: 80vh;
+      border-radius: 12px;
+      object-fit: contain;
+      box-shadow: 0 0 80px rgba(124,58,237,0.25);
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+    #lightbox.open #lightboxImg { transform: scale(1); }
+    #lightboxCaption {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    #lightboxClose {
+      position: absolute;
+      top: 20px; right: 24px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text);
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    #lightboxClose:hover { background: rgba(124,58,237,0.25); }
+    /* Make gallery items with real images show a zoom cursor */
+    .gallery-item img ~ .gallery-overlay { background: rgba(124,58,237,0.5); }
+
+    /* ─── Floating Social Icons ─────────────────────────────────────── */
+    #floatingSocials {
+      position: fixed;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    #floatingSocials.visible { opacity: 1; }
+    .float-social {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      transition: all 0.25s;
+      position: relative;
+    }
+    .float-social:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      transform: translateX(4px);
+    }
+    .float-social svg { width: 16px; height: 16px; }
+    @media (max-width: 900px) { #floatingSocials { display: none; } }
+
+    /* ─── Mobile Menu Improved ──────────────────────────────────────── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(243,240,255,0.98);
+      backdrop-filter: blur(20px);
+      z-index: 999;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 0 40px;
+      gap: 0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-menu.open { display: flex; opacity: 1; }
+    .mobile-menu-header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-menu a.mobile-link {
+      font-family: var(--font-head);
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: rgba(30,10,60,0.35);
+      text-decoration: none;
+      transition: all 0.2s;
+      line-height: 1.3;
+      display: block;
+      padding: 6px 0;
+    }
+    .mobile-menu a.mobile-link:hover { color: var(--text); padding-left: 12px; }
+    .mobile-menu-footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 24px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mobile-menu-footer-text { color: var(--muted); font-size: 0.8rem; }
+    .mobile-close {
+      position: static;
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--text);
+      transition: background 0.2s;
+    }
+    .mobile-close:hover { background: var(--accent); border-color: var(--accent); }
+    /* Hamburger → X animation */
+    .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ─── Reveal ────────────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      will-change: opacity, transform;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Staggered children — cards inside a stagger-parent animate one by one */
+    .stagger-parent .stagger-child {
+      opacity: 0;
+      transform: translateY(28px) scale(0.97);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .stagger-parent.visible .stagger-child:nth-child(1) { transition-delay: 0.05s; opacity: 1; transform: none; }
+    .stagger-parent.visible .stagger-child:nth-child(2) { transition-delay: 0.15s; opacity: 1; transform: none; }
+    .stagger-parent.visible .stagger-child:nth-child(3) { transition-delay: 0.25s; opacity: 1; transform: none; }
+    .stagger-parent.visible .stagger-child:nth-child(4) { transition-delay: 0.35s; opacity: 1; transform: none; }
+    .stagger-parent.visible .stagger-child:nth-child(5) { transition-delay: 0.45s; opacity: 1; transform: none; }
+    .stagger-parent.visible .stagger-child:nth-child(6) { transition-delay: 0.55s; opacity: 1; transform: none; }
+
+    /* Typewriter cursor */
+    .typewriter-cursor {
+      display: inline-block;
+      width: 3px;
+      background: var(--accent);
+      margin-left: 4px;
+      animation: blink 0.75s step-end infinite;
+      vertical-align: middle;
+      border-radius: 2px;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* Section transition shimmer line */
+    .section-divider {
+      width: 60%;
+      max-width: 600px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+      opacity: 0.25;
+      margin: 0 auto;
+      display: block;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .stagger-parent .stagger-child { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .typewriter-cursor { animation: none; }
+    }
+
+    /* ─── Responsive ────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .about-grid, .events-layout, .contact-grid { grid-template-columns: 1fr; gap: 40px; }      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-item:nth-child(1) { grid-column: span 2; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    }
+    @media (max-width: 560px) {
+      .hero-stats { gap: 28px; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .section { padding: 52px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Page Loader ──────────────────────────────────────────────── -->
+  <div id="pageLoader">
+    <div class="loader-logo">µLearn <span>AWH</span></div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  </div>
+
+  <!-- ─── Lightbox ─────────────────────────────────────────────────── -->
+  <div id="lightbox">
+    <button id="lightboxClose" aria-label="Close">✕</button>
+    <img id="lightboxImg" src="" alt="" />
+    <div id="lightboxCaption"></div>
+  </div>
+
+  <!-- ─── Floating Socials ─────────────────────────────────────────── -->
+  <div id="floatingSocials">
+    <a href="https://discord.gg/FwGZZ5fVDU" target="_blank" class="float-social" title="Discord">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.015.043.035.059a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+    </a>
+    <a href="https://www.instagram.com/mulearn_awh" target="_blank" class="float-social" title="Instagram">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    </a>
+    <a href="https://www.linkedin.com/company/mulearn-awh/" target="_blank" class="float-social" title="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <a href="https://whatsapp.com/channel/0029VaylbVgICVfsfN2SZc14" target="_blank" class="float-social" title="WhatsApp">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+    </a>
+  </div>
+
+  <!-- ─── Nav ─────────────────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="container nav-inner">
+      <a href="#hero" class="nav-logo">µLearn <span>AWH</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#achievements">Achievements</a></li>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="https://app.mulearn.org/register" target="_blank" class="btn btn-primary nav-cta" style="padding:10px 20px;font-size:13px;">Join µLearn ↗</a>
+      <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <a href="#hero" class="nav-logo">µLearn <span>AWH</span></a>
+      <div class="mobile-close" id="mobileClose">✕</div>
+    </div>
+    <nav style="display:flex;flex-direction:column;">
+      <a href="#about" class="mobile-link">About</a>
+      <a href="#achievements" class="mobile-link">Achievements</a>
+      <a href="#events" class="mobile-link">Events</a>
+      <a href="#team" class="mobile-link">Team</a>
+      <a href="#contact" class="mobile-link">Contact</a>
+    </nav>
+    <div class="mobile-menu-footer">
+      <span class="mobile-menu-footer-text">AWH Engineering College · Calicut</span>
+      <a href="https://app.mulearn.org/register" target="_blank" class="btn btn-primary" style="padding:10px 20px;font-size:13px;">Join µLearn ↗</a>
+    </div>
+  </div>
+
+  <!-- ─── Hero ─────────────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-bg">
+      <div class="hero-grid"></div>
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        AWH Engineering College · Calicut
+      </div>
+      <h1 class="hero-title">
+        <span id="typewriter-text"></span><span class="typewriter-cursor" id="tw-cursor"></span><br><span class="grad" id="typewriter-grad" style="opacity:0;transition:opacity 0.6s ease;">µLearn AWH</span>
+      </h1>
+      <p class="hero-sub">
+        µLearn AWH is a student-driven community that fosters skill growth, peer learning, and real-world opportunities through peer learning, real-world events, and a gamified karma system.
+      </p>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num"><span class="counter" data-count="1240">0</span>+</div>
+          <div class="hero-stat-label">Students Enrolled</div>
+        </div>
+        <div>
+          <div class="hero-stat-num"><span class="counter" data-count="880" data-suffix=".88K">0</span></div>
+          <div class="hero-stat-label">Karma Mined</div>
+        </div>
+        <div>
+          <div class="hero-stat-num"><span class="counter" data-count="8">0</span>+</div>
+          <div class="hero-stat-label">Events Hosted</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">#<span class="counter" data-count="4">0</span></div>
+          <div class="hero-stat-label">Campus Rank</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── About ─────────────────────────────────────────────────────── -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="reveal">
+          <div class="section-label">Who We Are</div>
+          <h2 class="section-title">A community built on growth & collaboration</h2>
+          <p class="section-sub" style="margin-bottom:24px;">
+            µLearn AWH is the official campus chapter of µLearn at AWH Engineering College, Calicut — part of Kerala's largest student skilling ecosystem with 64,000+ members and 400+ partner companies.
+          </p>
+          <p class="section-sub">
+            We break the echo chamber of traditional learning. Through Interest Groups, and a karma-based proof-of-work system, we help students build real skills, access exclusive internships via Launchpad, and grow together — week by week.
+          </p>
+        </div>
+        <div class="about-cards-grid stagger-parent reveal">
+          <div class="about-card stagger-child">
+            <div class="about-card-icon">🎯</div>
+            <h3>Proof of Work</h3>
+            <p>Karma points are earned by completing real tasks — not just attending classes. Your profile is your portfolio.</p>
+          </div>
+          <div class="about-card stagger-child">
+            <div class="about-card-icon">🤝</div>
+            <h3>Peer Learning</h3>
+            <p>Engage in weekly peer sessions, monthly skill challenges, and quarterly innovation sprints.</p>
+          </div>
+          <div class="about-card stagger-child">
+            <div class="about-card-icon">⚡</div>
+            <h3>Level Up System</h3>
+            <p>Progress through 4 levels — from onboarding to unlocking Interest Groups in AI, Web, Design, and more.</p>
+          </div>
+          <div class="about-card stagger-child">
+            <div class="about-card-icon">🚀</div>
+            <h3>Launchpad</h3>
+            <p>Access exclusive internships and the Top 100 Series — opportunities only available to active karma earners.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── Achievements ─────────────────────────────────────────────── -->
+  <section id="achievements" class="section">
+    <div class="container">
+      <div class="section-label reveal">Recognition</div>
+      <h2 class="section-title reveal">What we've achieved</h2>
+      <div class="achievements-grid stagger-parent reveal">
+        <div class="achievement-card stagger-child">
+          <img src="./images/achievement2.png" alt="Emerging Campus of 2024" class="achievement-img" />
+          <div class="achievement-body">
+            <div class="achievement-icon">🏆</div>
+            <h3>Emerging Campus of 2024</h3>
+            <p>AWH Engineering College, Kozhikode was awarded the Emerging Campus of 2024 at PERMUTE — µLearn & GTech's flagship Industry-Academia-Government initiative.</p>
+            <div class="achievement-year">PERMUTE 2024</div>
+          </div>
+        </div>
+        <div class="achievement-card stagger-child">
+          <img src="./images/achievement1.png" alt="Special Mention: Art of Teaching 2.0" class="achievement-img" />
+          <div class="achievement-body">
+            <div class="achievement-icon">🎓</div>
+            <h3>Special Mention: Art of Teaching 2.0</h3>
+            <p>Dr Kavitha S of AWH Engineering College received a Special Mention at PERMUTE for the Art of Teaching 2.0 — recognizing excellence in innovative teaching.</p>
+            <div class="achievement-year">PERMUTE 2024</div>
+          </div>
+        </div>
+        <div class="achievement-card stagger-child">
+          <div class="achievement-body">
+            <div class="achievement-icon">🥈</div>
+            <h3>A Memorable Milestone — #2 Campus Rank</h3>
+            <p>Back in November 2022, µLearn AWH stood at #2 on the Kerala campus leaderboard with 264.49K karma and 531 students — a proud moment in our journey.</p>
+            <div class="achievement-year">Nov 2022</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── Events ────────────────────────────────────────────────────── -->
+  <section id="events" class="section">
+    <div class="container">
+      <div class="section-label reveal">What's been happening</div>
+      <h2 class="section-title reveal">Our Event Journey</h2>
+      <div class="events-layout">
+        <div class="events-list reveal">
+          <div class="event-item active">
+            <div class="event-date">
+              <div class="event-date-month">Feb</div>
+              <div class="event-date-day">17</div>
+              <div class="event-date-year">2026</div>
+            </div>
+            <div class="event-info">
+              <h4>BrainByte: AI for Beginners</h4>
+              <p>Hands-on intro to AI, LLMs and AI as a Career — by Zaim Fazal.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <div class="event-date-month">Feb</div>
+              <div class="event-date-day">13</div>
+              <div class="event-date-year">2026</div>
+            </div>
+            <div class="event-info">
+              <h4>BrainByte: DSA Using C</h4>
+              <p>Beginner-friendly workshop on Data Structures & Algorithms using C Programming.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <div class="event-date-month">Sep</div>
+              <div class="event-date-day">01</div>
+              <div class="event-date-year">2025</div>
+            </div>
+            <div class="event-info">
+              <h4>Karma Minathon — Sept Edition</h4>
+              <p>30-day karma challenge with daily guided tasks and leaderboard competition.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <div class="event-date-month">Feb</div>
+              <div class="event-date-day">28</div>
+              <div class="event-date-year">2025</div>
+            </div>
+            <div class="event-info">
+              <h4>Introduction to IoT</h4>
+              <p>Hands-on IoT workshop by Vaishnav RS & Akhilesh AS with all components provided.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <div class="event-date-month">Feb</div>
+              <div class="event-date-day">17</div>
+              <div class="event-date-year">2025</div>
+            </div>
+            <div class="event-info">
+              <h4>Karma Minathon — Feb Edition</h4>
+              <p>Karma challenge with leaderboard competition and surprise rewards.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <div class="event-date-month">Nov</div>
+              <div class="event-date-day">14</div>
+              <div class="event-date-year">2023</div>
+            </div>
+            <div class="event-info">
+              <h4>Discord Stages</h4>
+              <p>GTech µLearn Weekly Twitch — Inspiration Station with Arfaz Khan Hijas Khan.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <div class="event-date-month">Nov</div>
+              <div class="event-date-day">01</div>
+              <div class="event-date-year">2023</div>
+            </div>
+            <div class="event-info">
+              <h4>Web for Team</h4>
+              <p>Website creation contest — build a site for your favourite ISL team and win karma points.</p>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <div class="event-date-month">Nov</div>
+              <div class="event-date-day">25</div>
+              <div class="event-date-year">2022</div>
+            </div>
+            <div class="event-info">
+              <h4>Mentor Connect #01</h4>
+              <p>Getting Companies to Fight for You — with Arvind Panicker, Application Engineer at Google.</p>
+            </div>
+          </div>
+        </div>
+        <div class="featured-event reveal">
+          <div class="featured-event-img">🤖</div>
+          <div class="featured-event-body">
+            <span class="tag">Latest Event</span>
+            <h3 style="margin-top:16px;">BrainByte: AI for Beginners</h3>
+            <p>A hands-on introduction to Artificial Intelligence covering Intro to AI, What is LLM, and AI as a Career — led by Zaim Fazal, AI Interest Group Lead at µLearn AWH.</p>
+            <a href="https://www.instagram.com/mulearn_awh" target="_blank" class="btn btn-primary">View on Instagram →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── Gallery ───────────────────────────────────────────────────── -->
+  <section id="gallery" class="section">
+    <div class="container">
+      <div class="section-label reveal">Memories</div>
+      <h2 class="section-title reveal">Moments from our journey</h2>
+      <div class="gallery-grid reveal">
+        <div class="gallery-item"><img src="./images/ai1.png" alt="AI for Beginners — Session" /><div class="gallery-overlay">🔍</div></div>
+        <div class="gallery-item"><img src="./images/ai2.png" alt="AI for Beginners — Talk" /><div class="gallery-overlay">🔍</div></div>
+        <div class="gallery-item"><img src="./images/ai3.png" alt="AI for Beginners — Workshop" /><div class="gallery-overlay">🔍</div></div>
+        <div class="gallery-item"><img src="./images/dsa1.png" alt="DSA Workshop — Presentation" /><div class="gallery-overlay">🔍</div></div>
+        <div class="gallery-item"><img src="./images/dsa2.png" alt="DSA Workshop — Audience" /><div class="gallery-overlay">🔍</div></div>
+        <div class="gallery-item"><img src="./images/dsa3.png" alt="DSA Workshop — Session" /><div class="gallery-overlay">🔍</div></div>
+      </div>
+      <p class="gallery-note reveal">More memories coming soon — follow us on <a href="https://www.instagram.com/mulearn_awh" target="_blank" style="color:var(--accent);">@mulearn_awh</a> for updates!</p>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── Team ──────────────────────────────────────────────────────── -->
+  <section id="team" class="section">
+    <div class="container">
+      <div class="section-label reveal">The People</div>
+      <h2 class="section-title reveal">Meet the team</h2>
+      <p class="section-sub reveal" style="margin-bottom:48px;">The dedicated students keeping the µLearn AWH chapter running strong.</p>
+      <div class="team-grid stagger-parent reveal">
+        <!-- Replace initials, names, and roles with real data -->
+        <div class="team-card stagger-child">
+          <div class="team-avatar">SH</div>
+          <h3>Sooryadas H</h3>
+          <div class="team-role">Campus Lead</div>
+          <div class="team-links">
+            <a href="#" class="team-link" title="LinkedIn" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          </div>
+        </div>
+        <div class="team-card stagger-child">
+          <div class="team-avatar">ZF</div>
+          <h3>Zaim Fazal PK</h3>
+          <div class="team-role">Tech Lead</div>
+          <div class="team-links">
+            <a href="#" class="team-link" title="LinkedIn" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          </div>
+        </div>
+        <div class="team-card stagger-child">
+          <div class="team-avatar">AR</div>
+          <h3>Archit Ravikumar</h3>
+          <div class="team-role">Marketing Lead</div>
+          <div class="team-links">
+            <a href="#" class="team-link" title="LinkedIn" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          </div>
+        </div>
+        <div class="team-card stagger-child">
+          <div class="team-avatar">CL</div>
+          <h3>Creative Lead</h3>
+          <div class="team-role">Creative</div>
+          <div class="team-links">
+            <a href="#" class="team-link" title="LinkedIn" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          </div>
+        </div>
+        <!-- Add more team cards here -->
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ─── Contact ───────────────────────────────────────────────────── -->
+  <section id="contact" class="section">
+    <div class="container">
+      <div class="section-label reveal">Get In Touch</div>
+      <h2 class="section-title reveal">Connect with µLearn AWH</h2>
+      <p class="section-sub reveal" style="margin-bottom:0;">Join our community, stay updated, and be part of the journey.</p>
+      <div class="contact-grid stagger-parent reveal">
+        <a href="https://discord.gg/FwGZZ5fVDU" target="_blank" class="contact-card stagger-child" style="text-decoration:none;color:inherit;">
+          <div class="contact-card-icon" style="background:rgba(88,101,242,0.2);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.101 18.08.115 18.1.134 18.12a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          </div>
+          <h3>Join our Discord</h3>
+          <p>The main hub for announcements, discussions, and community chats. Don't miss updates!</p>
+          <span class="btn btn-primary" style="width:fit-content;">Join Server →</span>
+        </a>
+        <a href="https://whatsapp.com/channel/0029VaylbVgICVfsfN2SZc14" target="_blank" class="contact-card stagger-child" style="text-decoration:none;color:inherit;">
+          <div class="contact-card-icon" style="background:rgba(37,211,102,0.15);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          </div>
+          <h3>WhatsApp Group</h3>
+          <p>Quick updates and event reminders on WhatsApp. Stay in the loop on the go.</p>
+          <span class="btn btn-outline" style="width:fit-content;">Join Group →</span>
+        </a>
+        <a href="https://www.instagram.com/mulearn_awh" target="_blank" class="contact-card stagger-child" style="text-decoration:none;color:inherit;">
+          <div class="contact-card-icon" style="background:rgba(225,48,108,0.15);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="url(#ig)"><defs><linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f09433"/><stop offset="25%" stop-color="#e6683c"/><stop offset="50%" stop-color="#dc2743"/><stop offset="75%" stop-color="#cc2366"/><stop offset="100%" stop-color="#bc1888"/></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </div>
+          <h3>Instagram</h3>
+          <p>Follow us for event highlights, community moments, and µLearn updates.</p>
+          <span class="btn btn-outline" style="width:fit-content;">Follow Us →</span>
+        </a>
+        <a href="https://www.linkedin.com/company/mulearn-awh/" target="_blank" class="contact-card stagger-child" style="text-decoration:none;color:inherit;">
+          <div class="contact-card-icon" style="background:rgba(10,102,194,0.15);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </div>
+          <h3>LinkedIn</h3>
+          <p>Connect professionally — follow our page for opportunities, events, and chapter milestones.</p>
+          <span class="btn btn-outline" style="width:fit-content;">Follow Page →</span>
+        </a>
+        <a href="mailto:mulearnawhec@gmail.com" class="contact-card stagger-child" style="text-decoration:none;color:inherit;">
+          <div class="contact-card-icon" style="background:rgba(124,58,237,0.1);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <h3>Email Us</h3>
+          <p>Have a collaboration idea or query? Drop us a mail and we'll get back to you.</p>
+          <span class="btn btn-outline" style="width:fit-content;">Send Email →</span>
+        </a>
+        <a href="https://app.mulearn.org/register" target="_blank" class="contact-card stagger-child" style="text-decoration:none;color:inherit;">
+          <div class="contact-card-icon" style="background:rgba(124,58,237,0.1);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>µLearn Platform</h3>
+          <p>Register on app.mulearn.org, join our AWH campus chapter, and start earning karma points today.</p>
+          <span class="btn btn-primary" style="width:fit-content;">Register Now →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Back to top button -->
+  <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="
+    position:fixed; bottom:28px; right:28px; z-index:500;
+    width:44px; height:44px; border-radius:50%;
+    background:var(--accent); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 20px var(--glow); opacity:0;
+    transition:opacity 0.3s, transform 0.3s; transform:translateY(10px);
+  " aria-label="Back to top">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <!-- ─── Footer ────────────────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#hero" class="nav-logo">µLearn <span>AWH</span></a>
+          <p>A peer-learning community at AWH Engineering College, Calicut — part of the µLearn network powering student growth across Kerala.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#achievements">Achievements</a></li>
+            <li><a href="#events">Events</a></li>
+            <li><a href="#team">Team</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="https://app.mulearn.org/register" target="_blank">µLearn Platform</a></li>
+            <li><a href="https://discord.gg/FwGZZ5fVDU" target="_blank">Discord</a></li>
+            <li><a href="https://www.instagram.com/mulearn_awh" target="_blank">Instagram</a></li>
+            <li><a href="https://www.linkedin.com/company/mulearn-awh/" target="_blank">LinkedIn</a></li>
+            <li><a href="https://whatsapp.com/channel/0029VaylbVgICVfsfN2SZc14" target="_blank">WhatsApp</a></li>
+            <li><a href="mailto:mulearnawhec@gmail.com">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 µLearn AWH · AWH Engineering College, Calicut</span>
+        <span>Built with ♥ by µLearn AWH Tech Team</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── JS ────────────────────────────────────────────────────────── -->
+  <script>
+    // ── Nav scroll effect ──────────────────────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ── Mobile menu ────────────────────────────────────────────────
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileClose');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+      hamburger.classList.add('active');
+    });
+    mobileClose.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('active');
+    });
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        hamburger.classList.remove('active');
+      });
+    });
+
+    // ── Floating socials visibility ────────────────────────────────
+    const floatingSocials = document.getElementById('floatingSocials');
+    window.addEventListener('scroll', () => {
+      floatingSocials.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+
+    // ── Typewriter effect ──────────────────────────────────────────
+    const twText = 'Welcome to';
+    const twEl = document.getElementById('typewriter-text');
+    const twCursor = document.getElementById('tw-cursor');
+    const twGrad = document.getElementById('typewriter-grad');
+    let twIndex = 0;
+    const typeNext = () => {
+      if (twIndex <= twText.length) {
+        twEl.textContent = twText.slice(0, twIndex);
+        twIndex++;
+        setTimeout(typeNext, twIndex === 1 ? 400 : 60);
+      } else {
+        // Done typing — show gradient line and hide cursor
+        twGrad.style.opacity = '1';
+        setTimeout(() => twCursor.style.display = 'none', 800);
+      }
+    };
+    setTimeout(typeNext, 600);
+
+    // ── Parallax on hero background ────────────────────────────────
+    const heroOrbs = document.querySelectorAll('.hero-orb');
+    const heroGrid = document.querySelector('.hero-grid');
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      heroOrbs.forEach((orb, i) => {
+        const speed = 0.08 + i * 0.04;
+        orb.style.transform = `translateY(${scrollY * speed}px)`;
+      });
+      if (heroGrid) heroGrid.style.transform = `translateY(${scrollY * 0.05}px)`;
+    }, { passive: true });
+
+    // ── Scroll reveal + stagger ────────────────────────────────────
+    const revealEls = document.querySelectorAll('.reveal');
+    function markVisible(el) { el.classList.add('visible'); }
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.transitionDelay = '0ms';
+            markVisible(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+      revealEls.forEach(el => observer.observe(el));
+
+      // Hard fallback
+      setTimeout(() => {
+        document.querySelectorAll('.reveal:not(.visible)').forEach(markVisible);
+      }, 2000);
+    } else {
+      revealEls.forEach(markVisible);
+    }
+
+    // ── Counter animation ──────────────────────────────────────────
+    function animateCount(el, target) {
+      let startTime = null;
+      const duration = 1500;
+      const suffix = el.dataset.suffix || '';
+      const step = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(eased * target);
+        // Animate decimal too if suffix starts with a decimal
+        if (suffix && suffix.startsWith('.')) {
+          const decMatch = suffix.match(/^(\.\d+)(.*)/);
+          if (decMatch) {
+            const decVal = parseFloat('0' + decMatch[1]);
+            const animatedDec = (eased * decVal).toFixed(2).substring(1); // e.g. ".88"
+            el.textContent = current + animatedDec + decMatch[2];
+          } else {
+            el.textContent = current + suffix;
+          }
+        } else {
+          el.textContent = current + (progress < 1 ? '' : suffix);
+        }
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = target + suffix;
+      };
+      requestAnimationFrame(step);
+    }
+
+    const counterEls = document.querySelectorAll('.counter[data-count]');
+    const counterObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCount(entry.target, parseInt(entry.target.dataset.count));
+          counterObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    counterEls.forEach(el => counterObs.observe(el));
+
+    // ── Back to top ────────────────────────────────────────────────
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      const show = window.scrollY > 400;
+      backToTop.style.opacity = show ? '1' : '0';
+      backToTop.style.transform = show ? 'translateY(0)' : 'translateY(10px)';
+    });
+
+    // ── Active event highlight ─────────────────────────────────────
+    const eventItems = document.querySelectorAll('.event-item');
+    eventItems.forEach(item => {
+      item.addEventListener('click', () => {
+        eventItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    // ── Active nav highlight on scroll ────────────────────────────
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const onScroll = () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+      });
+      navLinks.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ── Lightbox ───────────────────────────────────────────────────
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const img = item.querySelector('img');
+        if (!img) return; // skip placeholders
+        lightboxImg.src = img.src;
+        lightboxCaption.textContent = img.alt || '';
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ── Page loader ────────────────────────────────────────────────
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('pageLoader');
+      loader.style.opacity = '0';
+      setTimeout(() => loader.style.display = 'none', 600);
+    });
+
+  </script>
+</body>
+</html>
