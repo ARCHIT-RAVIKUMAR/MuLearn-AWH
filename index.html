@@ -189,6 +189,16 @@
       transition: all 0.3s;
     }
 
+    /* ─── Meteor Canvas ─────────────────────────────────────────────── */
+    #meteorCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
     /* ─── Hero ──────────────────────────────────────────────────────── */
     #hero {
       min-height: 100vh;
@@ -207,7 +217,7 @@
       position: absolute;
       border-radius: 50%;
       filter: blur(80px);
-      opacity: 0.25;
+      opacity: 0.12;
     }
     .hero-orb-1 {
       width: 700px; height: 700px;
@@ -361,8 +371,8 @@
       grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
-    .about-card:nth-child(2) { margin-top: 24px; }
-    .about-card:nth-child(4) { margin-top: -24px; }
+    .about-card:nth-child(2) { margin-top: 0; }
+    .about-card:nth-child(4) { margin-top: 0; }
 
     /* ─── Achievements ──────────────────────────────────────────────── */
     #achievements { background: var(--surface); }
@@ -431,6 +441,8 @@
       align-items: start;
     }
     .events-list { display: flex; flex-direction: column; gap: 16px; }
+    .event-hidden { display: none; }
+    .event-hidden.visible { display: flex; }
     .event-item {
       background: var(--card);
       border: 1px solid var(--border);
@@ -1047,6 +1059,7 @@
   <!-- ─── Hero ─────────────────────────────────────────────────────── -->
   <section id="hero">
     <div class="hero-bg">
+      <canvas id="meteorCanvas"></canvas>
       <div class="hero-grid"></div>
       <div class="hero-orb hero-orb-1"></div>
       <div class="hero-orb hero-orb-2"></div>
@@ -1071,10 +1084,6 @@
         <div>
           <div class="hero-stat-num"><span class="counter" data-count="880" data-suffix=".88K">0</span></div>
           <div class="hero-stat-label">Karma Mined</div>
-        </div>
-        <div>
-          <div class="hero-stat-num"><span class="counter" data-count="8">0</span>+</div>
-          <div class="hero-stat-label">Events Hosted</div>
         </div>
         <div>
           <div class="hero-stat-num">#<span class="counter" data-count="4">0</span></div>
@@ -1151,6 +1160,7 @@
           </div>
         </div>
         <div class="achievement-card stagger-child">
+          <img src="./images/milestone.png" alt="#2 Campus Rank Nov 2022" class="achievement-img" />
           <div class="achievement-body">
             <div class="achievement-icon">🥈</div>
             <h3>A Memorable Milestone — #2 Campus Rank</h3>
@@ -1204,7 +1214,7 @@
               <p>30-day karma challenge with daily guided tasks and leaderboard competition.</p>
             </div>
           </div>
-          <div class="event-item">
+          <div class="event-item event-hidden">
             <div class="event-date">
               <div class="event-date-month">Feb</div>
               <div class="event-date-day">28</div>
@@ -1215,7 +1225,7 @@
               <p>Hands-on IoT workshop by Vaishnav RS & Akhilesh AS with all components provided.</p>
             </div>
           </div>
-          <div class="event-item">
+          <div class="event-item event-hidden">
             <div class="event-date">
               <div class="event-date-month">Feb</div>
               <div class="event-date-day">17</div>
@@ -1226,7 +1236,7 @@
               <p>Karma challenge with leaderboard competition and surprise rewards.</p>
             </div>
           </div>
-          <div class="event-item">
+          <div class="event-item event-hidden">
             <div class="event-date">
               <div class="event-date-month">Nov</div>
               <div class="event-date-day">14</div>
@@ -1237,7 +1247,7 @@
               <p>GTech µLearn Weekly Twitch — Inspiration Station with Arfaz Khan Hijas Khan.</p>
             </div>
           </div>
-          <div class="event-item">
+          <div class="event-item event-hidden">
             <div class="event-date">
               <div class="event-date-month">Nov</div>
               <div class="event-date-day">01</div>
@@ -1248,7 +1258,7 @@
               <p>Website creation contest — build a site for your favourite ISL team and win karma points.</p>
             </div>
           </div>
-          <div class="event-item">
+          <div class="event-item event-hidden">
             <div class="event-date">
               <div class="event-date-month">Nov</div>
               <div class="event-date-day">25</div>
@@ -1259,6 +1269,7 @@
               <p>Getting Companies to Fight for You — with Arvind Panicker, Application Engineer at Google.</p>
             </div>
           </div>
+          <button id="eventsToggleBtn" class="btn btn-outline" onclick="toggleEvents()" style="margin-top:8px; align-self:center;">View More →</button>
         </div>
         <div class="featured-event reveal">
           <div class="featured-event-img">🤖</div>
@@ -1449,6 +1460,51 @@
 
   <!-- ─── JS ────────────────────────────────────────────────────────── -->
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // ── Animated Gradient Blobs ────────────────────────────────────
+    const canvas = document.getElementById('meteorCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const blobs = [
+      { x: 0.2, y: 0.3, r: 0.35, color: '#7c3aed', dx: 0.0003, dy: 0.0002, dr: 0.0001, phase: 0 },
+      { x: 0.7, y: 0.5, r: 0.30, color: '#a855f7', dx: -0.0002, dy: 0.0003, dr: -0.0001, phase: 1 },
+      { x: 0.5, y: 0.8, r: 0.25, color: '#c084fc', dx: 0.0002, dy: -0.0002, dr: 0.00015, phase: 2 },
+      { x: 0.85, y: 0.2, r: 0.20, color: '#9333ea', dx: -0.0003, dy: 0.0002, dr: -0.00012, phase: 3 },
+    ];
+
+    let t = 0;
+    function animateBlobs() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      t += 1;
+
+      blobs.forEach(blob => {
+        const x = (blob.x + Math.sin(t * blob.dx * 1000 + blob.phase) * 0.15) * canvas.width;
+        const y = (blob.y + Math.cos(t * blob.dy * 1000 + blob.phase) * 0.12) * canvas.height;
+        const r = (blob.r + Math.sin(t * blob.dr * 1000) * 0.05) * Math.min(canvas.width, canvas.height);
+
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, r);
+        grad.addColorStop(0, blob.color + '55');
+        grad.addColorStop(0.5, blob.color + '22');
+        grad.addColorStop(1, blob.color + '00');
+
+        ctx.filter = 'blur(40px)';
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.filter = 'none';
+      });
+
+      requestAnimationFrame(animateBlobs);
+    }
+    animateBlobs();
+
     // ── Nav scroll effect ──────────────────────────────────────────
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
@@ -1585,6 +1641,15 @@
       backToTop.style.opacity = show ? '1' : '0';
       backToTop.style.transform = show ? 'translateY(0)' : 'translateY(10px)';
     });
+
+    // ── Events toggle ──────────────────────────────────────────────
+    let eventsExpanded = false;
+    function toggleEvents() {
+      eventsExpanded = !eventsExpanded;
+      document.querySelectorAll('.event-hidden').forEach(el => el.classList.toggle('visible', eventsExpanded));
+      const btn = document.getElementById('eventsToggleBtn');
+      btn.textContent = eventsExpanded ? 'View Less ←' : 'View More →';
+    }
 
     // ── Active event highlight ─────────────────────────────────────
     const eventItems = document.querySelectorAll('.event-item');
