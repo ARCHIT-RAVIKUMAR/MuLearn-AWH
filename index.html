@@ -478,35 +478,29 @@
     .event-hidden { display: none !important; }
     .event-hidden.visible { display: flex !important; align-items: flex-start; }
     .event-poster {
-      display: none; /* hidden, shown via JS popup */
-    }
-    .event-poster-popup {
-      position: fixed;
-      z-index: 5000;
-      pointer-events: none;
-      opacity: 0;
-      transform: scale(0.85) translateY(10px);
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      border-radius: 16px;
+      max-height: 0;
       overflow: hidden;
-      box-shadow: 0 20px 60px rgba(124,58,237,0.3);
-      border: 2px solid rgba(124,58,237,0.3);
-      width: 220px;
-    }
-    .event-poster-popup.visible {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-    .event-poster-popup img {
       width: 100%;
+      border-radius: 10px;
+      margin-top: 0;
+      transition: max-height 0.4s ease, margin-top 0.4s ease, opacity 0.4s ease;
+      opacity: 0;
       display: block;
+      object-fit: cover;
     }
+    .event-item:hover .event-poster {
+      max-height: 300px;
+      margin-top: 14px;
+      opacity: 1;
+    }
+    .event-poster-popup { display: none; }
     .event-item {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 20px 24px;
       display: flex;
+      flex-wrap: wrap;
       gap: 20px;
       align-items: flex-start;
       cursor: pointer;
@@ -1047,8 +1041,6 @@
   <div class="event-poster-popup" id="posterPopup">
     <img id="posterPopupImg" src="" alt="Event Poster" />
   </div>
-
-  <!-- ─── Nav ─────────────────────────────────────────────────────── -->
   <nav id="navbar">
     <div class="container nav-inner">
       <a href="#hero" class="nav-logo"><img src="./images/logo.png" alt="µLearn AWH" style="height:90px;width:auto;" /></a>
@@ -1692,41 +1684,6 @@
       document.querySelectorAll('.event-hidden').forEach(el => el.classList.toggle('visible', eventsExpanded));
       const btn = document.getElementById('eventsToggleBtn');
       btn.textContent = eventsExpanded ? 'View Less ←' : 'View More →';
-    }
-
-    // ── Event poster hover popup ───────────────────────────────────
-    const posterPopup = document.getElementById('posterPopup');
-    const posterPopupImg = document.getElementById('posterPopupImg');
-    let hideTimeout;
-
-    // Only run on non-touch devices
-    if (window.matchMedia('(hover: hover)').matches) {
-      document.querySelectorAll('.event-item').forEach(item => {
-        const poster = item.querySelector('.event-poster');
-        if (!poster) return;
-
-        item.addEventListener('mouseenter', (e) => {
-          clearTimeout(hideTimeout);
-          posterPopupImg.src = poster.src;
-          posterPopup.classList.add('visible');
-          positionPopup(e);
-        });
-        item.addEventListener('mousemove', positionPopup);
-        item.addEventListener('mouseleave', () => {
-          hideTimeout = setTimeout(() => {
-            posterPopup.classList.remove('visible');
-          }, 80);
-        });
-      });
-    }
-
-    function positionPopup(e) {
-      const x = e.clientX + 20;
-      const y = e.clientY - 60;
-      const maxX = window.innerWidth - 240;
-      const maxY = window.innerHeight - 300;
-      posterPopup.style.left = Math.min(x, maxX) + 'px';
-      posterPopup.style.top = Math.min(Math.max(y, 10), maxY) + 'px';
     }
 
     // ── Active event highlight ─────────────────────────────────────
